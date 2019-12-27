@@ -36,9 +36,9 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 2: Concurrent Mark
 步骤1中的整个链路遍历。`从直接引用遍历到间接引用`。和用户线程同时进行。
 
-`Concurrent Mode Failure` ，
-> 业务线程将对象放入老年代，老年代内存不足
-> Minor GC时，Survivor晋升老年代，老年代内存不足。这种场景会多一个`promotion failed` 异常
+> `Concurrent Mode Failure` 出现场景：
+> a.业务线程将对象放入老年代，老年代内存不足
+> b.Minor GC时，Survivor晋升老年代，老年代内存不足。这种场景会多一个`promotion failed` 异常
 
 3: Concurrent Preclean
 处理步骤2中已标记但是由用户线程操作又`发生改变`的对象
