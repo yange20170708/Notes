@@ -36,7 +36,9 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 2: Concurrent Mark
 步骤1中的整个链路遍历。`从直接引用遍历到间接引用`。和用户线程同时进行。
 
-> [GC[ParNew (`promotion failed`)`Concurrent Mode Failure`：
+> - [GC[ParNew (`promotion failed`)`Concurrent Mode Failure`：
+
+
 > `promotion failed`-`Concurrent Mode Failure` :MinorGC时，Survivor晋升老年代，老年代内存足,但是有标记整理算法<b>碎片</b>，导致连续内存不足。（后续会导致提前进行CMS Full GC，带来STW。
 > 解决:
 > 调整Survivor，减少MinorGC
@@ -44,7 +46,7 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 > -XX:UseCMSCompactAtFullCollection -XX:CMSFullGCBeforeCompaction=0。即：CMS在进行x次Full GC（标记清除）之后进行一次标记整理）
 
 
-> `Concurrent Mode Failure` :业务线程直接将对象放入老年代，老年代内存不足
+> - `Concurrent Mode Failure` :业务线程直接将对象放入老年代，老年代内存不足
 > 解决：
 > XX:CMSInitiatingOccupancyFraction
 
