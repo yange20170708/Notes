@@ -10,8 +10,8 @@ young gen预计增量收集失败(old gen没有足够空间来容纳下次young 
 
 
 为什么CMS快？
-1.free-lists。不用花时间整理老年代
-2.4个阶段，大部分阶段和用户线程同时进行（会竞争CPU的时间），默认的GC的工作线程为服务器物理CPU核数的1/4；
+1. `free-lists`。不用花时间整理老年代
+2. 4个阶段，大部分阶段和用户线程同时进行（会竞争CPU的时间），默认的GC的工作线程为服务器物理CPU核数的1/4；
 
 
 
@@ -19,7 +19,7 @@ young gen预计增量收集失败(old gen没有足够空间来容纳下次young 
 日志
 
 新生代GC：
-[GC(Allocation Failure)ParNew   
+[GC(`Allocation Failure`)`ParNew`   
 GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 回收前后新生代大小，堆总大小。
 
@@ -30,19 +30,19 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 
 老年代GC：
 1: Initial Mark
-第一个STW。标记老年代中所有的GC Roots；标记被年轻代中活着的对象直接引用的对象。
+`第一个STW`。标记老年代中所有的`GC Roots`；标记被年轻代中活着的对象`直接引用`的对象。
 老年代大小，整个堆大小
 
 2: Concurrent Mark
-步骤1中的整个链路遍历。从直接引用遍历到间接引用。和用户线程同时进行。
+步骤1中的整个链路遍历。`从直接引用遍历到间接引用`。和用户线程同时进行。
 
 3: Concurrent Preclean
-处理步骤2中已标记但是由用户线程操作又发生改变的对象
+处理步骤2中已标记但是由用户线程操作又`发生改变`的对象
 
 4: Concurrent Abortable Preclean
 
 5: Final Remark
-第二个STW。标记老年代所有对象。包括改变的和新增的对象
+`第二个STW`。标记老年代所有对象。包括改变的和新增的对象
 
 6.Concurrent Sweep
 清理对象并回收
