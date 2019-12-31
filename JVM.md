@@ -27,8 +27,10 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 老年代需要用总堆-新生代计算出来。
 回收前后老年代差值，正=新生代这次GC新增量到老年代的大小
 
-> 如何判断是否新生代对象过多导致ygc：
-> jstat -gcutil
+> 如何排查ygc时间过长 checklist：
+> - 检查新生代GC的时候存活对象占比：配合stat -gctuil
+> - 检查StringTable hash槽，扫描StringTable：-XX:+PrintStringTableStatistics
+> - 检查各类引用：-XX:+PrintReferenceGC
 
 
 ### 老年代GC：
