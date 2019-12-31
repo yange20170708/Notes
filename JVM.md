@@ -27,6 +27,9 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 老年代需要用总堆-新生代计算出来。
 回收前后老年代差值，正=新生代这次GC新增量到老年代的大小
 
+> 如何判断是否新生代对象过多导致ygc：
+> jstat -gcutil
+
 
 ### 老年代GC：
 1: Initial Mark
@@ -49,6 +52,9 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 > - `Concurrent Mode Failure` :业务线程直接将对象放入老年代，老年代内存不足
 > 解决：
 > XX:CMSInitiatingOccupancyFraction
+
+> - `XX:+UseCMSInitiatingOccupancyOnly` 不设置会导致gc回收没有固定规律。
+> - 设置后和`XX:+CMSInitiatingOccupancyFraction`搭配使用
 
 3: Concurrent Preclean
 处理步骤2中已标记但是由用户线程操作又`发生改变`的对象
