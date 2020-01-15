@@ -1,14 +1,29 @@
-### 内存泄漏 Memory Leak
+
+### Young GC 全程stop the world
+> - 各个线程到达安全点的等待时间；`-XX:+PrintGCApplicationStoppedTime -XX:+PrintSafepointStatistics -XX:PrintSafepointStatisticsCount=1`
+> - 从 GC Root 扫描对象，进行标记的时间；`-XX:+PrintReferenceGC`
+> - 存活对象 Copy 到 Survivor 以及晋升 Old Gen 到的时间；
+> - GC 日志的时间；
+
+#### 排查ygc时间过长 checklist：
+> - 检查新生代GC的时候存活对象占比：配合stat -gctuil pid 1000
+> - 检查StringTable hash槽，扫描StringTable：-XX:+PrintStringTableStatistics
+> - 检查各类引用：-XX:+PrintReferenceGC
+
+#### 内存泄漏 Memory Leak
 > 1）可达，即在有向图中，存在通路可以与其相连；    
 > 2）无用，即无用但无法释放GC回收  
 
 #### 常见内存泄漏案例
-> 1)静态引用 list.add(object);object=null;由于list还在引用，object不会被回收。解决：list.clear();list=null;    
-> 2)单例引用外部实例    
-> 3)native资源(jvm通过jni暴漏出来的功能)。如直接内存，数据库连接（dataSourse.getConnection()），网络连接(socket)和io连接必须手动close    
+> 1)静态引用 list.add(object);object=null;由于list还在引用，object不会被回收。
+> - 解决：list.clear();list=null;    
+> 2)单例引用外部实例
+> 3)native资源(jvm通过jni暴漏出来的功能)。如直接内存，数据库连接（dataSourse.getConnection()），网络连接(socket)和io连接必须手动close
+> - 常见:FinalReference过多
+> - 解决:`-XX:+ParallelRefProcEnabled`
 
-#### 检查内存使用情况 jstat -gcutil 20954 1000
 
+<hr />
 young gen预计增量收集失败(old gen没有足够空间来容纳下次young GC晋升对象),full GC时压缩。
 
 不做压缩：
@@ -18,17 +33,9 @@ young gen预计增量收集失败(old gen没有足够空间来容纳下次young 
 -XX:+CMSScavengeBeforeRemark
 在CMS GC前启动一次ygc，目的在于减少old gen对ygc gen的引用，降低remark时的开销-----一般CMS的GC耗时 80%都在remark阶段
 
-
 ### 为什么CMS快？
 1. `free-lists`。不用花时间整理老年代
 2. 4个阶段，大部分阶段和用户线程同时进行（会竞争CPU的时间），默认的GC的工作线程为服务器物理CPU核数的1/4；
-
-### Young GC 全程stop the world
-> - 各个线程到达安全点的等待时间；
-> - 从 GC Root 扫描对象，进行标记的时间；
-> - 存活对象 Copy 到 Survivor 以及晋升 Old Gen 到的时间；
-> - GC 日志的时间；
-
 
 ### 日志
 
@@ -40,12 +47,6 @@ GC代表MinorGC。括号内部是GC原因。ParNew是采用的回收器名称。
 因为这是新生代的GC，所以没有统计老年代的大小。
 老年代需要用总堆-新生代计算出来。
 回收前后老年代差值，正=新生代这次GC新增量到老年代的大小
-
-> 如何排查ygc时间过长 checklist：
-> - 检查新生代GC的时候存活对象占比：配合stat -gctuil
-> - 检查StringTable hash槽，扫描StringTable：-XX:+PrintStringTableStatistics
-> - 检查各类引用：-XX:+PrintReferenceGC
-
 
 ### 老年代GC：
 1: Initial Mark
