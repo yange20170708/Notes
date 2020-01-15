@@ -1,7 +1,7 @@
 ### 内存泄漏 Memory Leak
-
 > 1）可达，即在有向图中，存在通路可以与其相连；    
-> 2）无用，即无用但无法释放GC回收    
+> 2）无用，即无用但无法释放GC回收  
+
 #### 常见内存泄漏案例
 > 1)静态引用 list.add(object);object=null;由于list还在引用，object不会被回收。解决：list.clear();list=null;    
 > 2)单例引用外部实例    
@@ -18,35 +18,16 @@ young gen预计增量收集失败(old gen没有足够空间来容纳下次young 
 -XX:+CMSScavengeBeforeRemark
 在CMS GC前启动一次ygc，目的在于减少old gen对ygc gen的引用，降低remark时的开销-----一般CMS的GC耗时 80%都在remark阶段
 
-##### 引用
-
-##### SoftReference
-##### WeakReference
-##### PhantomReference
-##### FinalReference  常见用处：释放native资源。缺点：容易内存泄漏
-> - java.lang.ref.Finalizer
-> -  - 实现了finalize方法的类会生成这个对象
-> -  - Finalizer继承FinalReference类,private,由jvm自动封装
-> -  - Finalizer有两个队列，一个是unfialized,一个是f-queue队列；
-
-> - 一个对象实现类object的finalize方法，
-> - jvm加载时，标记为f类
-> - 对象分配好空间或完成构造函数时，jvm调用Finalizer.register，new一个Finalizer对象，将f类注册到全局f-queue（ReferenceQueue）里，将Finalizer对象加入unfialized里;
-> - GC时，调用Finalizer.runFinalizer方法，将Finalizer对象从f-queue里取出，native调用f对象的finalize方法，下次GC发生时就可以将其关联的f对象回收了
-
-> - 类的修饰有很多，比如final，abstract，public等，如果某个类用final修饰，我们就说这个类是final类，
-> - 类似的，finalizer表示这个类是一个finalizer（f）类。
-> - f对象因为Finalizer的引用而变成了一个临时的强引用
-> - f对象至少经历两次GC才能被回收
-> - Reference对象是在gc的时候来处理的，如果没有触发GC就没有机会触发Reference引用的处理操作
-
-
 
 ### 为什么CMS快？
 1. `free-lists`。不用花时间整理老年代
 2. 4个阶段，大部分阶段和用户线程同时进行（会竞争CPU的时间），默认的GC的工作线程为服务器物理CPU核数的1/4；
 
-
+### Young GC 全程stop the world
+> - 各个线程到达安全点的等待时间；
+> - 从 GC Root 扫描对象，进行标记的时间；
+> - 存活对象 Copy 到 Survivor 以及晋升 Old Gen 到的时间；
+> - GC 日志的时间；
 
 
 ### 日志
