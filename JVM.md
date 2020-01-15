@@ -10,6 +10,10 @@
 > - 检查StringTable hash槽，扫描StringTable：-XX:+PrintStringTableStatistics
 > - 检查各类引用：-XX:+PrintReferenceGC
 
+##### 附：
+[一次 Young GC 的优化实践（FinalReference 相关）](https://www.jianshu.com/p/79d4a0516f11)
+
+
 #### 内存泄漏 Memory Leak
 > 1）可达，即在有向图中，存在通路可以与其相连；    
 > 2）无用，即无用但无法释放GC回收  
