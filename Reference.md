@@ -20,7 +20,7 @@
 
 
 # Reference 四种状态
-> 只需要通过成员变量next和queue来判断 
+`只需要通过成员变量next和queue来判断`
 #### 1.Active:next = null; 活动状态 
 > 对象存在强引用状态,还没有被回收;
 #### 2.Pending:next = this;queue = ReferenceQueue;  待处理状态。gc回收第一次触发，识别f类
@@ -46,7 +46,7 @@
 - Reference对象是在gc的时候来处理的，如果没有触发GC就没有机会触发Reference引用的处理操作
 
 ##### java.lang.ref.Finalizer
--  - 实现了finalize方法的类会生成这个对象
--  - Finalizer继承FinalReference类,private,由jvm自动封装
--  - Finalizer有两个队列，一个是unfialized,一个是f-queue队列；
+- 实现了finalize方法的类会生成这个对象
+- Finalizer继承FinalReference类,private,由jvm自动封装
+- Finalizer有两个队列，一个是unfialized,一个是f-queue队列；
 
