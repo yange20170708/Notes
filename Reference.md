@@ -3,7 +3,12 @@
 特殊需求：
 > - 弹性回收（内存不够时，对象需要降级）
 > - - 缓存数据在内存紧张时自动释放掉空间防止oom、
+> - - - SoftReference 高速缓存
+> - - - WeakReference 普通缓存(WeakHashMap)
+
 > - 补充回收（gc只能回收jvm资源，一旦涉及native资源，则需要手动回收）
+> - - - PhantomReference 堆外缓存
+> - - - FinalReference native
 > - - 直接内存对象回收之前需自动释放掉其占用的堆外内存，
 > - - socket对象被回收之前关闭连接，
 > - - 文件流对象被回收之前自动关闭打开的文件等操作
@@ -20,14 +25,9 @@
 #### 4.Inactive:next = this;queue = ReferenceQueue.NULL; 可回收状态 
 > 处于此状态的Reference对象可以被回收,并且其内部封装的对象也可以被回收掉了
  
+<hr />
 
-##### 引用
-
-##### SoftReference
-##### WeakReference
-##### PhantomReference
-##### FinalReference  常见用处：释放native资源。缺点：容易内存泄漏
-> - java.lang.ref.Finalizer
+### java.lang.ref.Finalizer
 > -  - 实现了finalize方法的类会生成这个对象
 > -  - Finalizer继承FinalReference类,private,由jvm自动封装
 > -  - Finalizer有两个队列，一个是unfialized,一个是f-queue队列；
